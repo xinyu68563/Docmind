@@ -150,6 +150,11 @@
     "sha256": "985349e3df53a6ae7a3efa65741d5c69a5980e73919d5848e92fac7b299767e5"
   },
   {
+    "path": "docs/ARCHITECTURE.md",
+    "bytes": 1243,
+    "sha256": "1841b0a5fb3f76e4d1decfb0c15ff0c9fad72ab458181201db84d80529b37b56"
+  },
+  {
     "path": "docs/RELEASE_VALIDATION.md",
     "bytes": 1421,
     "sha256": "d81c78440147fa667a822c399899643e73815391393ff613d0fb6ae32bd074f4"
@@ -166,8 +171,8 @@
   },
   {
     "path": "docs/TRYOUT.md",
-    "bytes": 3086,
-    "sha256": "24e0c9ce6f7e79678f24207d6581f7d2d1144d9e5c930d04b87b5c2ddd064b2b"
+    "bytes": 3570,
+    "sha256": "acb35feeb09c79601c646ac3f5db9d45e0009002244a9b1e22c59a8b2e4743c2"
   },
   {
     "path": "frontend/index.html",
@@ -216,8 +221,8 @@
   },
   {
     "path": "README.md",
-    "bytes": 3200,
-    "sha256": "a89b5f8c1e035bf1083a86776dfe9ae7ef7b774beca86cb0c06ce23f66f688e3"
+    "bytes": 6687,
+    "sha256": "1a3cf4db2c060d8dfc61b70f9a5481f78d1147e785ed216d42edb0c6900a4b03"
   },
   {
     "path": "requirements-demo.txt",

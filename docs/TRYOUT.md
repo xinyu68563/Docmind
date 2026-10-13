@@ -4,7 +4,20 @@
 
 ## 演示模式（无GPU和模型下载）
 
-按照README命令安装requirements-demo.txt、构建Vue与Java、启动stub。浏览器地址8088，worker8788；默认真实工作台8089/8789可同时保留。浏览器左上角显示“桩后端 · 非模型”，固定回答以STUB开头。生成token为0。
+在解压后的项目根目录打开PowerShell，执行：
+
+```powershell
+python -m venv .venv
+.venv\Scripts\python.exe -m pip install -r requirements-demo.txt
+.venv\Scripts\python.exe scripts/check_environment.py
+.venv\Scripts\python.exe scripts/build_frontend.py
+service\mvnw.cmd -f service/pom.xml package
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/start_docmind.ps1 -Backend stub -ServicePort 8088 -WorkerPort 8788
+```
+
+需要真实问答时，先完成同样的环境安装和构建，再继续下方“真实模型模式”。
+
+浏览器地址8088，worker8788；默认真实工作台8089/8789可同时保留。浏览器左上角显示“桩后端 · 非模型”，固定回答以STUB开头。生成token为0。
 
 运行 `.venv\Scripts\python.exe scripts/make_demo_pdf.py` 生成原创合成测试PDF，上传 `examples/demo.pdf`，等待就绪后选择它并提交问题。演示模式的上传向量是确定性占位数据，不用LLM，也没有语义检索质量含义。切换real不会复用stub索引。
 
