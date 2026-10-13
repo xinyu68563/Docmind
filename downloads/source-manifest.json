@@ -386,8 +386,8 @@
   },
   {
     "path": "tests/test_round13_worker_boundary.py",
-    "bytes": 16463,
-    "sha256": "eeed9202ce844612f72966d05a201eed1fa13507ac8140f0ad3cf49b6121be8d"
+    "bytes": 17399,
+    "sha256": "d9e05df40ca4c848e6be55154599b09ada8cd4fe84e6a6dbc992f0ccb519e227"
   },
   {
     "path": "tests/test_task_persistence.py",

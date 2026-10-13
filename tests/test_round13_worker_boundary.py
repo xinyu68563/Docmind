@@ -186,28 +186,51 @@ def test_full_path_submit_poll_result(stub_worker):
 
 
 def test_two_tasks_run_serially_never_concurrently(tmp_path):
-    engine = StubEngine(stage_delay_ms=150)
+    class ObservedEngine(StubEngine):
+        def __init__(self):
+            super().__init__(stage_delay_ms=0)
+            self.guard = threading.Lock()
+            self.first_entered = threading.Event()
+            self.release_first = threading.Event()
+            self.active = 0
+            self.max_active = 0
+            self.entries = 0
+
+        def run(self, params, hooks, journal):
+            with self.guard:
+                self.active += 1
+                self.entries += 1
+                first = self.entries == 1
+                self.max_active = max(self.max_active, self.active)
+            try:
+                if first:
+                    self.first_entered.set()
+                    if not self.release_first.wait(10):
+                        raise RuntimeError('测试未释放首个任务')
+                return super().run(params, hooks, journal)
+            finally:
+                with self.guard:
+                    self.active -= 1
+
+    engine = ObservedEngine()
     worker = Worker(engine, queue_max=4, journal_dir=tmp_path / "j")
     worker.start()
     httpd, client = _serve(worker)
     try:
         _, a = client.post("/v1/tasks", {"question": "第一个问题"})
+        assert engine.first_entered.wait(5), '首个任务没有进入执行器'
         _, b = client.post("/v1/tasks", {"question": "第二个问题"})
-        seen = []
-        deadline = time.time() + 20
-        while time.time() < deadline:
-            _, va = client.get(f"/v1/tasks/{a['task_id']}")
-            _, vb = client.get(f"/v1/tasks/{b['task_id']}")
-            seen.append((va["status"], vb["status"]))
-            if va["status"] in (COMPLETED, FAILED) and vb["status"] in (COMPLETED, FAILED):
-                break
-            time.sleep(0.02)
-        # 核心断言：任何时刻都不允许两个任务同时 running
-        assert not any(sa == RUNNING and sb == RUNNING for sa, sb in seen), \
-            "单执行线程保证了串行；出现并发说明队列/执行器设计被破坏"
-        assert any(sa == RUNNING and sb == QUEUED for sa, sb in seen), \
-            "应当观察到第二个任务在排队（否则没真正测到串行）"
+        # A 被事件保持在执行器内；这一请求不可能跨越 A/B 的交接点。
+        _, vb = client.get(f"/v1/tasks/{b['task_id']}")
+        assert vb['status'] == QUEUED, '首个任务执行时，第二个必须保持排队'
+        engine.release_first.set()
+        assert _wait_terminal(client, a['task_id'])['status'] == COMPLETED
+        assert _wait_terminal(client, b['task_id'])['status'] == COMPLETED
+        # 两次 HTTP 读取不是同一时刻的快照。直接度量实际 run() 重叠。
+        assert engine.entries == engine.runs == 2
+        assert engine.active == 0 and engine.max_active == 1, '执行器发生真实并发'
     finally:
+        engine.release_first.set()
         httpd.shutdown()
         httpd.server_close()
         worker.shutdown()
