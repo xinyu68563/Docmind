@@ -1,4 +1,4 @@
-# 朋友本地试用
+# 本地试用
 
 下载仓库Code → Download ZIP并解压。请使用Python 3.11+、Java 21、Node.js（含npm）、Apache Maven。安装这些官方工具后重新打开终端使PATH生效。不要在GitHub页面直接运行Python。
 
