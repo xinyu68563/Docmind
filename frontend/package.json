@@ -1,0 +1,19 @@
+{
+  "name": "docmind-workspace",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1"
+  },
+  "dependencies": {
+    "vue": "3.5.13",
+    "katex": "0.16.22"
+  },
+  "devDependencies": {
+    "vite": "6.0.5",
+    "@vitejs/plugin-vue": "5.2.1"
+  }
+}

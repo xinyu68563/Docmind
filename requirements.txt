@@ -1,0 +1,7 @@
+-r requirements-demo.txt
+# Install the matching CUDA PyTorch wheel FIRST (see docs/TRYOUT.md).
+sentence-transformers==6.1.0
+transformers==5.19.0
+scikit-learn==1.9.1
+accelerate==1.15.0
+bitsandbytes==0.50.2

@@ -1,0 +1,392 @@
+[
+  {
+    "path": ".github/workflows/ci.yml",
+    "bytes": 647,
+    "sha256": "b0c5009918bba010709a1c66b98bc31d346a134c8995d983f8a985a1e66a2127"
+  },
+  {
+    "path": ".gitignore",
+    "bytes": 301,
+    "sha256": "9c64781430642b3319aafe6b24e8a5522acd69b636998c8d7d0bab4e329fc88b"
+  },
+  {
+    "path": "docmind/__init__.py",
+    "bytes": 462,
+    "sha256": "af46a06fbda7d6276b481d5d57c38fd89888ea7431abe03470bb2cb1aa1fc2c0"
+  },
+  {
+    "path": "docmind/agent/__init__.py",
+    "bytes": 46,
+    "sha256": "45b97987d4fee5e431f1c041d36d151bb2efe3ace2fd9d7dc1097620438b48e2"
+  },
+  {
+    "path": "docmind/agent/prompts.py",
+    "bytes": 8631,
+    "sha256": "88c4df891ad6a1ac3d96d143137f612d5f77ddfbdec712711bdbea225b5486f5"
+  },
+  {
+    "path": "docmind/agent/react.py",
+    "bytes": 75413,
+    "sha256": "64b9efafe6c76d95c5027d8aeb4eabcaf2541a8cd3e0a53c346deb7650fa36de"
+  },
+  {
+    "path": "docmind/cli.py",
+    "bytes": 20167,
+    "sha256": "51a72f8b31b79f850c9032528ee16de3d5c061dce631474043b46347e6fb28e9"
+  },
+  {
+    "path": "docmind/eval/__init__.py",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "docmind/eval/call_journal.py",
+    "bytes": 26996,
+    "sha256": "bc70480a89d6f932b546c8997b35facd6158e95a6375a19cc0da1637d6df125d"
+  },
+  {
+    "path": "docmind/eval/metrics.py",
+    "bytes": 17335,
+    "sha256": "745cc3410546c40b7c1ce6f72f909fb98191b8884ae542724e153f983911cb42"
+  },
+  {
+    "path": "docmind/eval/provenance.py",
+    "bytes": 32687,
+    "sha256": "d7eef278ca154ea847086c895c4d93809cd695e0136724d3654204ef00c4addd"
+  },
+  {
+    "path": "docmind/generate/__init__.py",
+    "bytes": 40,
+    "sha256": "893b577513094f5fc4a97fcb4c0a247fc61a2a5ff42bcc2956167c6ece8748b8"
+  },
+  {
+    "path": "docmind/generate/llm.py",
+    "bytes": 9809,
+    "sha256": "404e980445790dea4b1aa311371fe950e53c6d7f4d7be80fbebccb6dfe009d0d"
+  },
+  {
+    "path": "docmind/ingest/__init__.py",
+    "bytes": 25,
+    "sha256": "98af48358c68d622dc9ca929c0504c15321a229663629b97af02fca49781f2c5"
+  },
+  {
+    "path": "docmind/ingest/chunker.py",
+    "bytes": 11068,
+    "sha256": "150e15b29b29518848ab51c331cc723750a142c737933108ae40d6aae474d32e"
+  },
+  {
+    "path": "docmind/ingest/pdf_parser.py",
+    "bytes": 11957,
+    "sha256": "3c8dcc54eeb93733cc8b63996a6d357d7eae108d2f73378587fdcc779a248d2d"
+  },
+  {
+    "path": "docmind/ingest/quality.py",
+    "bytes": 5541,
+    "sha256": "9be9fbac2f06d8e210db23f31cc605f494cc459e9626096b1dbe05f1dad23cb5"
+  },
+  {
+    "path": "docmind/ingest/source_context.py",
+    "bytes": 5405,
+    "sha256": "8bf354a0d864db46338063f64a1a32a0475f091fde5d73725941dbc0f202dd86"
+  },
+  {
+    "path": "docmind/retrieve/__init__.py",
+    "bytes": 19,
+    "sha256": "595ba512d895d96bbc948a75721a4bb8edcd4385adc26dfaddc07e71761d6c84"
+  },
+  {
+    "path": "docmind/retrieve/bm25.py",
+    "bytes": 9145,
+    "sha256": "8df94ef2bf432b35ad3b1a9e267ddff6c79ffd4ca2f2df9ec60ebad6ab404299"
+  },
+  {
+    "path": "docmind/retrieve/embeddings.py",
+    "bytes": 8729,
+    "sha256": "6d394f9a53327ae948cc98c14024064676ded55f2e292a7e11bf56cc2d35cf4d"
+  },
+  {
+    "path": "docmind/retrieve/fusion.py",
+    "bytes": 6540,
+    "sha256": "2afca5ea3b464d9d47e4db9019e5cf2866078b7838c94318ae7c869fa5ca4142"
+  },
+  {
+    "path": "docmind/retrieve/vector.py",
+    "bytes": 3541,
+    "sha256": "1c8ce78d182d197b824051349a92a7c3ed1e9088c2ee7554b1aab79fbd670abe"
+  },
+  {
+    "path": "docmind/server/__init__.py",
+    "bytes": 169,
+    "sha256": "6641b4458238a239337bf1afea3ade37bf0cf7b3ba3b31fbde0b906f0a05cc9c"
+  },
+  {
+    "path": "docmind/server/demo_encoder.py",
+    "bytes": 403,
+    "sha256": "88a58e45d3e02432bec928b72977b923473240f071577b38f8e784d32ab78b77"
+  },
+  {
+    "path": "docmind/server/embedding_pool.py",
+    "bytes": 1122,
+    "sha256": "782d9775327e7d6d9fbf89f5412258d382a9bb27a8cb28ac6a7c9d2dd914edd6"
+  },
+  {
+    "path": "docmind/server/library.py",
+    "bytes": 9988,
+    "sha256": "61236858c8a70c00c9de425b8f250e9d546238ea89f44ff0f180aaf640533906"
+  },
+  {
+    "path": "docmind/server/sources.py",
+    "bytes": 2507,
+    "sha256": "806c944ba4f0e186e28ed777297bb507765131e04a765b61b0e134b3f7bf7e3d"
+  },
+  {
+    "path": "docmind/server/task_store.py",
+    "bytes": 3828,
+    "sha256": "d02a1f44b00e58f628b56376392fe2777adb1f82b229067220be1be045468e95"
+  },
+  {
+    "path": "docmind/server/worker.py",
+    "bytes": 57103,
+    "sha256": "985349e3df53a6ae7a3efa65741d5c69a5980e73919d5848e92fac7b299767e5"
+  },
+  {
+    "path": "docs/RELEASE_VALIDATION.md",
+    "bytes": 1421,
+    "sha256": "d81c78440147fa667a822c399899643e73815391393ff613d0fb6ae32bd074f4"
+  },
+  {
+    "path": "docs/RESUME.md",
+    "bytes": 1472,
+    "sha256": "1df50b4196efd9eaca9c42ddfeec4169f32c3d771174720f5730bb11ec368c7a"
+  },
+  {
+    "path": "docs/TESTING.md",
+    "bytes": 1084,
+    "sha256": "3dda53405df02241e014bde73c07a75616ebca1987bf56dade7af9c72ce5e1cb"
+  },
+  {
+    "path": "docs/TRYOUT.md",
+    "bytes": 3086,
+    "sha256": "24e0c9ce6f7e79678f24207d6581f7d2d1144d9e5c930d04b87b5c2ddd064b2b"
+  },
+  {
+    "path": "frontend/index.html",
+    "bytes": 268,
+    "sha256": "4bdf59da4e404d63a4dba79b7233299f06f122f0bb378f94b7600509f4e9e317"
+  },
+  {
+    "path": "frontend/package-lock.json",
+    "bytes": 43511,
+    "sha256": "239b00d9d515a8724a5edfa099c69ef493c7cc488411e9929c4eaf69b1bce2dd"
+  },
+  {
+    "path": "frontend/package.json",
+    "bytes": 394,
+    "sha256": "3297be2bee1ba51f268f2da18e22d82aa90a413c7344bcde817631a88e58cc13"
+  },
+  {
+    "path": "frontend/src/App.vue",
+    "bytes": 20304,
+    "sha256": "04dcd2906e4504a584faccf341ec06063d87d22a8dfe5a268eb173f21efc07f3"
+  },
+  {
+    "path": "frontend/src/main.js",
+    "bytes": 108,
+    "sha256": "f92c9aa1c7edab655d33c114220a125ed6b7471200a652bf8cfdabf7c86fcd7e"
+  },
+  {
+    "path": "frontend/src/math.js",
+    "bytes": 613,
+    "sha256": "0dac8de9d04291d3a608af8c5ea112cb5b923e00ba243078825b9364396c5abc"
+  },
+  {
+    "path": "frontend/src/style.css",
+    "bytes": 13516,
+    "sha256": "59297231c09360a82c67b5dff791474f50d078c163c8bb0b0645ff0ae2ce9836"
+  },
+  {
+    "path": "frontend/vite.config.js",
+    "bytes": 198,
+    "sha256": "a46de11e3cb5ec61bead9041d8051c917c2bdf2698374ee9bc40ce5ab2241b56"
+  },
+  {
+    "path": "LICENSE",
+    "bytes": 34503,
+    "sha256": "7f8f48e4266aa8fd3033dfaa4bb7f6e83a60c6e099f82d4959b81de90e67cd8f"
+  },
+  {
+    "path": "README.md",
+    "bytes": 3200,
+    "sha256": "a89b5f8c1e035bf1083a86776dfe9ae7ef7b774beca86cb0c06ce23f66f688e3"
+  },
+  {
+    "path": "requirements-demo.txt",
+    "bytes": 149,
+    "sha256": "4fb96519416c50183da41f2d2758158116461860d459ee59d1316271c909cac3"
+  },
+  {
+    "path": "requirements-dev.txt",
+    "bytes": 41,
+    "sha256": "9740d4f03611d8011b180c57f69f0a3ca4f32e57a93d007cf87d77d8096babba"
+  },
+  {
+    "path": "requirements.txt",
+    "bytes": 212,
+    "sha256": "111c19ea71fb1ac5263d6894cd6a136a318454fcdc9a831d7c3e0446c0740902"
+  },
+  {
+    "path": "scripts/build_frontend.py",
+    "bytes": 674,
+    "sha256": "e3ea35e04d6d0fc6cf550d2ca37d91bd112cb3061e0e57a839aac092ab3d9dd1"
+  },
+  {
+    "path": "scripts/check_environment.py",
+    "bytes": 1235,
+    "sha256": "ddd5a2446a02041d8f9cee452ce874b8474225f845c203a808084223f9ba496d"
+  },
+  {
+    "path": "scripts/download_llm.py",
+    "bytes": 8346,
+    "sha256": "5f5652b471c01bc3dc51fa0d7c4f9fb87ec6dbe67d4d19e1d9eca6c4bd80768c"
+  },
+  {
+    "path": "scripts/download_models.py",
+    "bytes": 369,
+    "sha256": "5b3a6eee44d3891cfbdb4756e25e493c09b23e98c028ced4f9b5ad7e86d51ebc"
+  },
+  {
+    "path": "scripts/make_demo_pdf.py",
+    "bytes": 948,
+    "sha256": "e02f269d8841b8ec529a4a3dcaca6830b780ca24f6ce329314b21f88a1815511"
+  },
+  {
+    "path": "scripts/package_release.py",
+    "bytes": 2237,
+    "sha256": "9a26f0ab32facb9d94f3a968a5121c5bd031bb8f1fd9d2e96e764dc43cdc8f11"
+  },
+  {
+    "path": "scripts/start_docmind.ps1",
+    "bytes": 3667,
+    "sha256": "7877ff440c503cc681687598e6c4d5edd5705a908d8ac7e17ae63c913f213040"
+  },
+  {
+    "path": "service/mvnw",
+    "bytes": 366,
+    "sha256": "5c440ffd5aeb10e1bea327105e4708a9c8fe2781d5f63644712ed9620d32fa4c"
+  },
+  {
+    "path": "service/mvnw.cmd",
+    "bytes": 391,
+    "sha256": "0e0a76d445539d7cd2b3034b6f6280f0f39740ca66e06e34d393c420d41f910d"
+  },
+  {
+    "path": "service/pom.xml",
+    "bytes": 1936,
+    "sha256": "6f122485a171c3fb1a43cd4d24d28396615dc9b2168065f096f847f981c366a5"
+  },
+  {
+    "path": "service/src/main/java/com/chenxinyu/docmind/config/DocMindProperties.java",
+    "bytes": 890,
+    "sha256": "a99188d159b2fd11c1dfab12f4363a2a80f2da76f0101c25af831ed45b7a0ad5"
+  },
+  {
+    "path": "service/src/main/java/com/chenxinyu/docmind/DocMindServiceApplication.java",
+    "bytes": 1350,
+    "sha256": "1f18acb02c6c8ea48fda771c6b8b3da8ef81f9f1daf86b1dd996d915c09c62db"
+  },
+  {
+    "path": "service/src/main/java/com/chenxinyu/docmind/task/TaskService.java",
+    "bytes": 10918,
+    "sha256": "933c8e166b86cabbca23a437b7b2571c9fa901ceb3d9769f4cdfcd49a7c4fc85"
+  },
+  {
+    "path": "service/src/main/java/com/chenxinyu/docmind/task/TaskSnapshot.java",
+    "bytes": 3941,
+    "sha256": "2fb557a0a95c0d52ac08ccf7243ecfc6ea5dafba579d81efb08b78872b27a2b7"
+  },
+  {
+    "path": "service/src/main/java/com/chenxinyu/docmind/web/ApiExceptionHandler.java",
+    "bytes": 3074,
+    "sha256": "82c9b648f1b8fff8063c99e1d31463c9d7e5b0d05877f0bf506aa6ef5c2e1c6f"
+  },
+  {
+    "path": "service/src/main/java/com/chenxinyu/docmind/web/HealthController.java",
+    "bytes": 4714,
+    "sha256": "1cb74a44af04900d6da11a2cc6ddb7cd51dad259d0aadbbf89df8f0e64790484"
+  },
+  {
+    "path": "service/src/main/java/com/chenxinyu/docmind/web/SourcesController.java",
+    "bytes": 2608,
+    "sha256": "2e551e1932f5c78367bdc72c173d44becc532237f5b3865e7bdd60c82d0d6e3c"
+  },
+  {
+    "path": "service/src/main/java/com/chenxinyu/docmind/web/TaskController.java",
+    "bytes": 9642,
+    "sha256": "a0a5cbb75e37a8ff938f43d626ce94152561b1430cd4473c62e31ab1bd7ad6d3"
+  },
+  {
+    "path": "service/src/main/java/com/chenxinyu/docmind/worker/WorkerClient.java",
+    "bytes": 11137,
+    "sha256": "61ab878ab2897354edec425345abc6cb0fff74b12d73e186e855ceaf7bb3528d"
+  },
+  {
+    "path": "service/src/main/java/com/chenxinyu/docmind/worker/WorkerException.java",
+    "bytes": 2468,
+    "sha256": "b16ad189429be2f98e8b02f85bc13318f71d5bb2459cdcb928f9a4fef69e1164"
+  },
+  {
+    "path": "service/src/main/resources/application.yml",
+    "bytes": 1663,
+    "sha256": "ab1ee9ed6a6bfa67f8b5d4a4f0392b815bdbe341600a4f1e7a992bdd0271e69a"
+  },
+  {
+    "path": "service/src/test/java/com/chenxinyu/docmind/FakeWorker.java",
+    "bytes": 8107,
+    "sha256": "88a006a4caf05689f548de418f07ca332a4cf840ff16f805e500d96befa487c9"
+  },
+  {
+    "path": "service/src/test/java/com/chenxinyu/docmind/ServiceBoundaryTests.java",
+    "bytes": 16682,
+    "sha256": "27c0c27deb8226ce6dac4b61664e4401c956ca3862eebfdc1cb3bf33657c2b87"
+  },
+  {
+    "path": "service/src/test/java/com/chenxinyu/docmind/WorkerDownTests.java",
+    "bytes": 3054,
+    "sha256": "e798a3422ab090208efc1ff84ed35dbd6d82ce35ab71608be0196d9de4ebcad5"
+  },
+  {
+    "path": "tests/test_agent.py",
+    "bytes": 18272,
+    "sha256": "1c3cea2a0e4cea654400a0a52226770ca3995245cc73278a15448c7d103900c7"
+  },
+  {
+    "path": "tests/test_chunker.py",
+    "bytes": 7625,
+    "sha256": "d52adf9eeb9120473cae1cb30ba18f80c735ac85ff4922f1f398e38ab868fef9"
+  },
+  {
+    "path": "tests/test_embedding_pool.py",
+    "bytes": 1592,
+    "sha256": "925e208b1e0c9ed14096006f70ed76dba2cd31e2769bb76429ecadffe81841f1"
+  },
+  {
+    "path": "tests/test_first_use.py",
+    "bytes": 3219,
+    "sha256": "aff62a106dcf741ff301f55f77839a8be2ca3f127ac2f5d024891757be2688b4"
+  },
+  {
+    "path": "tests/test_round13_worker_boundary.py",
+    "bytes": 16463,
+    "sha256": "eeed9202ce844612f72966d05a201eed1fa13507ac8140f0ad3cf49b6121be8d"
+  },
+  {
+    "path": "tests/test_task_persistence.py",
+    "bytes": 3941,
+    "sha256": "d56159a947884d292ab8a271033a0b58fe31ebf57ab5cf87d2d412c15f66a1b2"
+  },
+  {
+    "path": "THIRD_PARTY_NOTICES.md",
+    "bytes": 1235,
+    "sha256": "78fba5173c334229d979538371a152ed3de984bf617120109073bdc39e6301cb"
+  }
+]

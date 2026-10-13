@@ -1,0 +1,90 @@
+<script setup>
+import {computed,onMounted,onUnmounted,ref,watch} from 'vue'
+import katex from 'katex'
+import 'katex/dist/katex.min.css'
+import {renderMath} from './math.js'
+const health=ref(null),docs=ref([]),question=ref(''),task=ref(null),error=ref(''),notice=ref(''),busy=ref(false),selected=ref(null),source=ref(null),sourceError=ref(''),view=ref('text'),history=ref([]),cancelPending=ref(false),docFilter=ref(''),budget=ref(4000),rounds=ref(3),scope=ref([]),pdfZoom=ref(100),pdfPage=ref(1),pageTotal=ref(0),pageImage=ref(''),pageError=ref(''),pageLoading=ref(false),uploading=ref(false)
+let stream=null,poll=null,generation=0,importPoll=null,pageGeneration=0
+const terminal=new Set(['completed','failed','cancelled'])
+const result=computed(()=>task.value?.result)
+const running=computed(()=>task.value && !terminal.has(task.value.status))
+const visibleDocs=computed(()=>docs.value.filter(d=>d.file_name.toLowerCase().includes(docFilter.value.toLowerCase())))
+const labels={queued:'排队中',running:'处理中',completed:'处理完成',failed:'执行失败',cancelled:'已取消',unknown:'无法确认',not_run:'未校验',passed:'模型自校验通过',plan:'规划查询',retrieve:'检索',reflect:'检查证据',answer:'生成回答',verify:'校验回答',source_select:'选择核对原文',agent:'Agent 处理中',starting:'准备中',done:'完成',parsing:'解析中',indexing:'建立索引中',ready:'可提问',interrupted_by_restart:'重启中断',persistence_failed:'记录保存失败'}
+const textStatus=(s)=>labels[s]||s
+const parts=computed(()=>String(result.value?.answer||'').split(/(\[\d+\])/).map(s=>({text:s,number:/^\[\d+\]$/.test(s)?Number(s.slice(1,-1)):null})))
+const pdfUrl=computed(()=>selected.value?.doc_id?`/api/documents/${encodeURIComponent(selected.value.doc_id)}/pdf#page=${pdfPage.value||1}`:'')
+async function api(path,options={}){
+ const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),15000)
+ try{const r=await fetch(path,{...options,signal:controller.signal,headers:{'Content-Type':'application/json',...options.headers}});let data;try{data=await r.json()}catch{throw Error('服务响应格式异常，请检查服务是否正常启动。')}if(!r.ok){const e=Error(data.message||data.reason||data.error||`请求失败 ${r.status}`);e.status=r.status;throw e}return data}
+ catch(e){if(e.name==='AbortError')throw Error('请求超时，请检查本地服务。');throw e}finally{clearTimeout(timeout)}
+}
+async function loadHistory(){try{history.value=(await api('/api/tasks')).tasks||[]}catch(e){error.value=e.message}}
+async function refresh(){try{health.value=await api('/api/health');await loadDocuments();await loadHistory();error.value=''}catch(e){health.value=null;error.value=e.message}}
+async function loadDocuments(){docs.value=(await api('/api/documents')).documents;const active=docs.value.some(d=>['queued','parsing','indexing'].includes(d.status));if(active&&!importPoll)importPoll=setInterval(()=>loadDocuments().catch(e=>{error.value=e.message;clearInterval(importPoll);importPoll=null}),2500);if(!active&&importPoll){clearInterval(importPoll);importPoll=null}}
+async function upload(event){const file=event.target.files?.[0];if(!file)return;uploading.value=true;error.value='';try{if(file.size>20*1024*1024||!file.name.toLowerCase().endsWith('.pdf'))throw Error('请选择不超过 20 MB 的 PDF。');const r=await api('/api/imports',{method:'POST',headers:{'Content-Type':'application/pdf','X-File-Name':encodeURIComponent(file.name)},body:await file.arrayBuffer()});scope.value=[r.doc_id];notice.value=r.duplicate?'该文件已存在，已选择现有论文。':'已开始导入。语义索引使用 CPU，不会占用问答显卡。';await loadDocuments()}catch(e){error.value=e.message}finally{uploading.value=false;event.target.value=''}}
+const scopeReady=computed(()=>scope.value.length<=10&&scope.value.every(id=>docs.value.some(d=>d.doc_id===id&&d.status==='ready')))
+const libraryUnavailable=computed(()=>!!health.value?.worker?.library?.recovery_errors?.length)
+const answerScope=computed(()=>(task.value?.document_ids||[]).map(id=>docs.value.find(d=>d.doc_id===id)?.file_name||id).join('、')||'内置10篇论文')
+const scopeLabel=computed(()=>scope.value.length?`已选择 ${scope.value.length} 篇论文`:'内置 10 篇论文 · 跨论文检索')
+function disconnect(){if(stream){stream.close();stream=null}if(poll){clearInterval(poll);poll=null}}
+function accept(t){const changed=task.value?.task_id!==t.task_id;task.value=t;if(changed&&t.question)question.value=t.question;if(changed)scope.value=t.document_ids|| (t.document_id?[t.document_id]:[]);if(terminal.has(t.status)){cancelPending.value=false;disconnect();loadHistory()}}
+function follow(id){
+ disconnect();cancelPending.value=false;notice.value='';task.value=null
+ window.history.replaceState(null,'',`?task=${encodeURIComponent(id)}`)
+ const epoch=++generation;let fetching=false
+ const current=()=>epoch===generation
+ async function fetchTask(){if(!current()||fetching)return;fetching=true;try{const t=await api(`/api/tasks/${id}`);if(current()){accept(t);if(!t.stale)error.value=''}}catch(e){if(current()){error.value=e.status===404?'任务不存在或记录不可恢复，请重新提交问题。':e.message;if(e.status===404){disconnect();task.value=null}}}finally{fetching=false}}
+ stream=new EventSource(`/api/tasks/${id}/events`)
+ stream.addEventListener('status',e=>{if(current())accept(JSON.parse(e.data))})
+ for(const name of ['created','stage','status.queued','status.running','status.completed','status.failed','status.cancelled','cancel_requested'])stream.addEventListener(name,fetchTask)
+ stream.addEventListener('terminal',e=>{if(!current())return;const t=JSON.parse(e.data);disconnect();if(['worker_lost','not_found','error'].includes(t.status)){error.value=t.message||'服务连接中断，请重新连接或查看历史记录。';return}fetchTask()})
+ stream.onerror=()=>{if(current()&&!poll){notice.value='阶段连接中断，正在通过状态接口恢复。';poll=setInterval(fetchTask,2000)}}
+ fetchTask()
+}
+async function submit(){if(!question.value.trim()||running.value||busy.value||!scopeReady.value)return;busy.value=true;const submittedQuestion=question.value.trim();const submittedScope=[...scope.value];error.value='';selected.value=null;source.value=null;try{const t=await api('/api/tasks',{method:'POST',body:JSON.stringify({question:submittedQuestion,token_budget:Number(budget.value),max_rounds:Number(rounds.value),...(submittedScope.length?{document_ids:submittedScope}:{})})});follow(t.task_id);task.value={...t,question:submittedQuestion,document_ids:submittedScope}}catch(e){error.value=e.message}finally{busy.value=false}}
+async function cancel(){const id=task.value?.task_id;if(!id)return;cancelPending.value=true;try{const t=await api(`/api/tasks/${id}/cancel`,{method:'POST',body:'{}'});if(t.note)notice.value=t.note;const latest=await api(`/api/tasks/${id}`);if(task.value?.task_id===id)accept(latest)}catch(e){error.value=e.message;cancelPending.value=false}}
+watch(()=>[selected.value?.doc_id,selected.value?.physical_pdf_page,selected.value?.page_start],()=>{const target=selected.value?.physical_pdf_page||selected.value?.page_start||1;pdfZoom.value=100;pageTotal.value=0;if(pdfPage.value===target)loadPage();else pdfPage.value=target})
+watch(pdfPage,loadPage)
+async function loadPage(){const docId=selected.value?.doc_id;const epoch=++pageGeneration;pageError.value='';pageLoading.value=!!docId;if(pageImage.value){URL.revokeObjectURL(pageImage.value);pageImage.value=''}if(!docId)return;const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),15000);try{const r=await fetch(`/api/documents/${encodeURIComponent(docId)}/pages/${pdfPage.value}`,{signal:controller.signal});if(!r.ok){let detail;try{detail=await r.json()}catch{}throw Error(detail?.message||'页图读取失败，请检查页码或打开原 PDF。')}const blob=await r.blob();if(epoch!==pageGeneration)return;pageTotal.value=Number(r.headers.get('X-PDF-Pages'))||0;pageImage.value=URL.createObjectURL(blob)}catch(e){if(epoch===pageGeneration)pageError.value=e.name==='AbortError'?'页图读取超时，请重试。':e.message}finally{clearTimeout(timeout);if(epoch===pageGeneration)pageLoading.value=false}}
+function changePage(delta){pdfPage.value=Math.max(1,Math.min(pageTotal.value||200,pdfPage.value+delta))}
+async function selectEvidence(index){const evidence=result.value?.evidence?.[index];if(!evidence)return;selected.value={...evidence,number:index+1};source.value=null;sourceError.value='';view.value='text';try{const c=await api(`/api/chunks/${encodeURIComponent(evidence.chunk_id)}`);if(selected.value?.chunk_id===c.chunk_id)source.value=c}catch(e){if(selected.value?.chunk_id===evidence.chunk_id){sourceError.value=e.message;error.value=e.message}}}
+function selectDocument(d){if(d.status!=='ready'){notice.value=d.message||'论文尚未就绪';return}selected.value={...d,page_start:1};source.value=null;sourceError.value='';view.value='pdf'}
+function openTask(t){question.value=t.question;selected.value=null;source.value=null;error.value='';follow(t.task_id)}
+function exportAnswer(){if(!result.value)return;const r=result.value;const citations=(r.evidence||[]).map((e,i)=>`[${i+1}] ${e.file_name} — PDF页 ${e.page_start??'未知'}${e.human_reviewed_source?`；人工核对补充第${e.physical_page}页`:''}\n\n${e.excerpt}`).join('\n\n');const md=`# DocMind 研究笔记\n\n问题：${task.value.question||question.value}\n\n检索范围：${(task.value.document_ids||[]).map(id=>docs.value.find(d=>d.doc_id===id)?.file_name||id).join('、')||'内置10篇论文'}\n后端：${r.backend}\n校验：${r.verification_status}（模型自校验不是事实保证）\n来源模式：${r.answer_source}\n\n${r.answer}\n\n## 引用证据\n\n${citations}\n\n任务ID：${task.value.task_id}\n`;const url=URL.createObjectURL(new Blob([md],{type:'text/markdown;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download=`DocMind-${task.value.task_id.slice(0,8)}.md`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+onMounted(()=>{refresh();const id=new URLSearchParams(location.search).get('task');if(id&&/^[a-f0-9]{32}$/.test(id))follow(id)});onUnmounted(()=>{generation++;disconnect();if(importPoll)clearInterval(importPoll);pageGeneration++;if(pageImage.value)URL.revokeObjectURL(pageImage.value)})
+</script>
+
+<template>
+ <div class="workspace">
+  <aside class="sidebar"><a class="brand" href="/">D<span>DocMind</span></a><p class="eyebrow">LOCAL RESEARCH WORKSPACE</p>
+   <div class="library-head"><h2>论文资料库</h2><span>{{docs.length}}</span></div><p class="muted small">勾选用于提问 · 点击名称阅读</p><label class="upload-button">{{uploading?'上传中…':'＋ 上传 PDF'}}<input type="file" accept="application/pdf,.pdf" :disabled="uploading||libraryUnavailable" @change="upload" aria-label="上传 PDF"></label><p class="muted small">最大 20 MB / 200 页 · 暂不支持扫描件 OCR</p>
+   <input v-model="docFilter" class="library-search" placeholder="筛选论文名称" aria-label="筛选论文名称"><p v-if="!visibleDocs.length" class="muted small">没有匹配的论文</p>
+   <div v-for="d in visibleDocs" :key="d.doc_id" class="doc-row" :class="{chosen:scope.includes(d.doc_id)}"><input type="checkbox" v-model="scope" :value="d.doc_id" :disabled="d.status!=='ready'||(!scope.includes(d.doc_id)&&scope.length>=10)" :aria-label="'选择论文 '+d.file_name"><button class="doc" @click="selectDocument(d)" :title="d.file_name"><span class="file-icon">PDF</span><span>{{d.file_name.replace(/\.pdf$/i,'').replace(/^\d+_/, '')}}<small>{{textStatus(d.status)}} · {{d.chunks}} 个片段</small><small v-if="d.status!=='ready'" class="import-error">{{d.message}}</small></span></button></div>
+   <div class="local-note"><span class="dot"></span> 本地运行<br><small>论文与模型留在本机</small></div>
+  </aside>
+  <main><div v-if="libraryUnavailable" class="notice" role="alert">资料库完整性检查发现异常，暂不能继续上传；可用论文仍可提问。请恢复原文或查看本机日志。</div><header><div><span class="eyebrow">RESEARCH / ASK & TRACE</span><h1>让每个结论，都有出处。</h1></div><button class="connection" @click="refresh"><span class="dot" :class="{offline:!health}"></span>{{health?.stub?'桩后端 · 非模型':health?(health.worker?.engine?.loaded?'模型服务已就绪':'服务已连接 · 首次回答需准备模型'):'服务未连接'}}</button></header>
+   <div v-if="error" class="notice" role="alert">{{error}}<button @click="error=''" aria-label="关闭提示">×</button></div>
+   <div v-if="notice" class="notice neutral" role="status">{{notice}}<button @click="notice=''" aria-label="关闭状态提示">×</button></div>
+   <section class="composer"><label for="question">向论文提问</label><div class="scope-summary"><span class="scope-icon">▤</span><strong>{{scopeLabel}}</strong><button v-if="scope.length" @click="scope=[]">恢复默认范围</button></div><div v-if="scope.length" class="scope-chips"><button v-for="id in scope" :key="id" @click="scope=scope.filter(x=>x!==id)" :title="docs.find(d=>d.doc_id===id)?.file_name">{{docs.find(d=>d.doc_id===id)?.file_name||id}} <span>×</span></button></div><p v-if="!scopeReady" class="muted small">所选论文尚未就绪，请等待索引完成；失败时可重新上传。</p><textarea id="question" v-model="question" maxlength="2000" placeholder="例如：论文如何描述 sinh 正则化采样与高斯采样的收敛速度？" @keydown.ctrl.enter.prevent="submit"></textarea><details class="settings"><summary>回答设置</summary><div><label>输出预算 <input v-model.number="budget" type="number" min="256" max="8000" step="256" aria-label="输出预算"></label><label>最多反思轮数 <input v-model.number="rounds" type="number" min="0" max="5" aria-label="最多反思轮数"></label><small>减少轮数和预算可缩短等待，不保证答案更准确。</small></div></details><div class="composer-footer"><span>基于所选范围检索 · 回答附引用 <small>{{question.length}} / 2000</small></span><button class="primary" :disabled="!question.trim()||running||busy||!scopeReady" @click="submit">{{busy?'提交中…':'检索并回答 ↗'}}</button></div></section>
+   <div class="content-grid" :class="{'with-source':selected}"><section class="answer-pane">
+    <div class="section-head"><h2>研究笔记</h2><button v-if="result" @click="exportAnswer" class="export-button">导出笔记 ↓</button><span v-if="task" class="badge">{{textStatus(task.status)}}</span></div>
+    <div v-if="!task" class="empty"><span class="outline-icon">↗</span><h3>从一个具体问题开始</h3><p>阅读跨论文的回答，再点击引用回到证据与原 PDF。</p><button class="suggestion" @click="question='sinh 正则化采样的收敛速度比高斯采样快吗？请给出论文依据。'">比较两种采样方法的收敛速度 →</button></div>
+    <div v-else>
+     <div class="task-context"><small>本次回答的问题</small><p>{{task.question}}</p><small>检索范围：{{answerScope}}</small></div>
+     <div v-if="running" class="progress"><span class="spinner"></span><div>{{textStatus(task.stage||task.status)}}<small>首次提问可能需要加载模型。阶段流不等于逐 token 流。</small></div><button :disabled="cancelPending" @click="cancel">{{cancelPending?'等待协作停止':'取消任务'}}</button></div>
+     <div v-if="task.stale" class="notice">服务暂时不可达，以下是最后一次观测到的状态。</div>
+     <div v-if="task.error" class="notice">{{task.error.message}}</div>
+     <div v-if="result" class="result">
+      <div class="verification" :class="result.verification_status==='passed'?'checked':'unverified'"><strong>{{result.verification_status==='failed'?'回答未通过校验':textStatus(result.verification_status)}}</strong><p>模型自校验不代表事实已核定，重要结论请查看原文。</p><span>引用：{{result.citation_validity==='valid'?'编号有效':result.citation_validity==='none'?'无引用':'编号异常'}} · {{result.answer_source==='program_rendered_source_quote'?'人工核对原文的程序引用':result.backend==='stub'?'测试桩输出':'模型生成'}}</span></div>
+      <p class="answer-text"><template v-for="(part,i) in parts" :key="i"><button v-if="part.number" class="citation" @click="selectEvidence(part.number-1)" :disabled="part.number>result.evidence.length">{{part.text}}</button><span v-else v-html="renderMath(part.text,katex)"></span></template></p>
+      <ul v-if="result.issues?.length" class="issues"><li v-for="issue in result.issues" :key="issue">{{issue}}</li></ul>
+      <div class="usage">输出 {{result.usage?.output_tokens??'未知'}} token <span>·</span> {{Number(result.elapsed_s||0).toFixed(1)}} 秒 <span>·</span> {{result.evidence?.length||0}} 条证据</div>
+      <h3 class="evidence-title">引用证据</h3><button v-for="(e,i) in result.evidence" :key="e.chunk_id" class="evidence" :class="{active:selected?.chunk_id===e.chunk_id}" @click="selectEvidence(i)"><b>{{String(i+1).padStart(2,'0')}}</b><div><strong>{{e.file_name}}</strong><p>{{e.excerpt}}</p><small>PDF 页 {{e.page_start??'未知'}}{{e.page_end!==e.page_start?'–'+e.page_end:''}} <span v-if="e.human_reviewed_source">· 含人工核对补充（第 {{e.physical_page}} 页）</span></small></div><span>↗</span></button>
+     </div>
+    </div>
+   </section><section v-if="selected" class="source-pane"><div class="section-head"><h2>{{selected.number?'证据 '+selected.number:'原始文献'}}</h2><button class="icon-button" @click="selected=null">×</button></div><p class="source-name">{{selected.file_name}}</p><nav class="tabs"><button :class="{active:view==='text'}" @click="view='text'" :disabled="!selected.chunk_id">证据原文</button><button :class="{active:view==='pdf'}" @click="view='pdf'">原 PDF</button></nav><div v-if="view==='text'" class="source-text"><p class="muted small">来自索引的完整片段 · PDF 第 {{source?.page_start??selected.page_start}} 页</p><p v-if="sourceError" class="notice">{{sourceError}}</p><mark v-else>{{source?.text||'正在读取原文…'}}</mark><p v-if="selected.human_reviewed_source" class="notice">模型还读取了第 {{selected.physical_page}} 页的人工核对补充，与本片段独立。请在 PDF 中核对该页。</p><button v-if="selected.human_reviewed_source" class="suggestion" @click="selected={...selected,physical_pdf_page:selected.physical_page};view='pdf'">打开核对补充所在页 →</button></div><div v-else class="pdf-reader"><div class="page-toolbar"><button @click="changePage(-1)" :disabled="pdfPage<=1" aria-label="上一页">←</button><span>第 {{pdfPage}} / {{pageTotal||'…'}} 页</span><button @click="pdfZoom=Math.max(100,pdfZoom-25)" :disabled="pdfZoom<=100" aria-label="缩小原文">−</button><span>{{pdfZoom}}%</span><button @click="pdfZoom=Math.min(250,pdfZoom+25)" :disabled="pdfZoom>=250" aria-label="放大原文">＋</button><button @click="changePage(1)" :disabled="!pageTotal||pdfPage>=pageTotal" aria-label="下一页">→</button></div><p v-if="pageLoading" class="muted">正在渲染原文页…</p><div v-if="pageError" class="notice">{{pageError}}<button @click="loadPage">重试</button></div><div class="page-canvas"><img v-if="pageImage" :src="pageImage" :style="{width:pdfZoom+'%'}" :alt="selected.file_name+' 物理第 '+pdfPage+' 页'"></div></div><a :href="pdfUrl" target="_blank" rel="noopener" class="pdf-link">在新窗口查看 PDF ↗</a></section></div>
+   <section v-if="history.length" class="history"><h2>最近任务</h2><button v-for="t in history" :key="t.task_id" @click="openTask(t)"><span>{{t.question}}</span><small>{{textStatus(t.status)}}</small></button><p class="muted small">任务和答案保存于本机；重启中断的任务不会自动重跑。最多显示最近 100 条。</p></section>
+   <footer>DocMind · 本地论文问答工作台 <span>可追溯，不等于无误。</span></footer>
+  </main>
+ </div>
+</template>

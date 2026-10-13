@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+MVN="$HERE/../.tools/apache-maven-3.9.11/bin/mvn"
+if [ -f "$MVN" ]; then
+  exec "$MVN" -Dmaven.repo.local="$HERE/../.tools/m2" "$@"
+fi
+if command -v mvn >/dev/null; then exec mvn "$@"; fi
+echo 'Apache Maven missing. Install Maven and add bin to PATH.' >&2
+exit 127

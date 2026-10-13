@@ -1,0 +1,46 @@
+server:
+  # 默认只绑回环地址。公网暴露是另一件事，本轮不做，也不应该默认开着。
+  address: 127.0.0.1
+  port: 8080
+  shutdown: graceful
+  tomcat:
+    max-swallow-size: 21MB
+
+spring:
+  application:
+    name: docmind-service
+  jackson:
+    default-property-inclusion: non_null
+  lifecycle:
+    # 关闭时给正在写的 SSE 一点缓冲，避免客户端收到半个事件
+    timeout-per-shutdown-phase: 5s
+
+docmind:
+  worker:
+    # Python 常驻 worker 的地址。worker 与 Java 是两个进程，
+    # 这个 URL 是它们之间唯一的耦合点，必须可配置（换端口/换机器都要能改）。
+    base-url: http://127.0.0.1:8765
+    connect-timeout-ms: 2000
+    # 单次请求超时。Java 绝不能无限等 worker：
+    # worker 卡住时宁可返回一个明确的 503，也不要让线程池被慢慢耗尽。
+    request-timeout-ms: 10000
+  tasks:
+    # 与 Python worker 侧的上限保持一致；两边不一致时以更严格的一方为准，
+    # 这是"纵深防御"，不是重复劳动。
+    max-question-chars: 2000
+    min-token-budget: 256
+    max-token-budget: 8000
+    max-rounds-max: 5
+  sse:
+    poll-interval-ms: 400
+    # SSE 连接最长保留时间。到点即正常关闭（客户端可带 Last-Event-ID 重连），
+    # 不让它变成一条永久悬挂的连接。
+    timeout-ms: 600000
+    replay-buffer: 200
+  # 期望的 worker 后端。设置成 stub 表示"我明确知道对面是桩"，
+  # 用来跑链路测试；默认是 real，且一旦 worker 回报 stub 会显式告警而不静默接受。
+  expected-backend: real
+
+logging:
+  level:
+    com.chenxinyu.docmind: INFO

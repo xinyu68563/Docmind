@@ -1,0 +1,6 @@
+# No torch/model downloads required for explicit stub demonstrations.
+pymupdf==1.28.2
+rank-bm25==0.2.2
+jieba==0.42.1
+rich==15.0.0
+numpy==2.5.3

@@ -54,4 +54,3 @@ flowchart LR
 ## 源码与许可
 
 本项目源码采用GNU AGPL-3.0-or-later，见[LICENSE](LICENSE)。模型权重及第三方组件遵循各自许可。仓库不包含模型权重、用户上传文件、日志或个人评测记录。
-
