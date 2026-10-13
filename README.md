@@ -14,7 +14,7 @@
 
 ## 快速试用（Windows）
 
-安装Python 3.11或以上、Java 21、Node.js（含npm）及Apache Maven并加入PATH。完整步骤：[朋友试用指南](docs/TRYOUT.md)。
+安装Python 3.11或以上、Java 21、Node.js（含npm）及Apache Maven并加入PATH。完整步骤：[试用指南](docs/TRYOUT.md)。
 
 ```powershell
 python -m venv .venv
