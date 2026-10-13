@@ -15,3 +15,5 @@ service\mvnw.cmd -f service/pom.xml test
 发布验证的实际命令、数量和限制见docs/RELEASE_VALIDATION.md。原始私人数据及历史实验保留在开发工作区，没有随仓库传输。
 
 公开源码的首次安装验证见[README部署验证](DEPLOYMENT_CHECK.md)。
+
+Windows还提供2项启动器回归：不完整JAR拒绝启动、运行副本与构建输出隔离及副本完整性检查。Linux CI中这两项会明确跳过，Windows环境通过powershell执行。

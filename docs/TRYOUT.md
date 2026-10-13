@@ -59,3 +59,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/start_docmind.ps1
 ## 反馈模板
 
 操作系统/显卡/模式；安装或操作步骤；预期和实际表现；报错截图；问题及引用页。公开Issue只附你允许公开的材料，勿包含私人论文、密钥或日志中的私人问题。
+
+## 更新与重新构建
+
+启动器会先检查完整Spring Boot JAR，再在logs/launcher/runtime保存按SHA256命名的独立运行副本。以后重建service/target不会改写正在运行的服务文件。新构建需要重新启动Java服务才能生效；准备重启前先确认没有进行中的问答任务。启动器还会检查首页与JavaScript资源，而不只检查后端健康接口。

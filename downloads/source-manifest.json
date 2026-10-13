@@ -166,13 +166,13 @@
   },
   {
     "path": "docs/TESTING.md",
-    "bytes": 1168,
-    "sha256": "8aaa6bb3d9f1824b9896b5e99218a8d07e3dd2e58ff7227ec3869becb9beacf4"
+    "bytes": 1373,
+    "sha256": "d6d1586a60070411502ccc5da0506b6f99ba4ca8f20256207ce98b401a37a9ad"
   },
   {
     "path": "docs/TRYOUT.md",
-    "bytes": 4106,
-    "sha256": "c1650629839cd8a6e4ea0ef59c3dd501c3bf30cc696a0b66f8f99ed35a00eb10"
+    "bytes": 4517,
+    "sha256": "3757388ff0796b0abcc79dc48020d218dda6a3e3a346d5b6088ca1ee109136e7"
   },
   {
     "path": "docs/USAGE.md",
@@ -271,13 +271,13 @@
   },
   {
     "path": "scripts/package_release.py",
-    "bytes": 2263,
-    "sha256": "751843b5b8a7486271ba53532800276735c9a2b1275e88f18933bf438032e972"
+    "bytes": 2290,
+    "sha256": "3720bd56810434beac41af920e538c438e7cb7a9d86d8189d7a84b5d99fed74f"
   },
   {
     "path": "scripts/start_docmind.ps1",
-    "bytes": 3667,
-    "sha256": "7877ff440c503cc681687598e6c4d5edd5705a908d8ac7e17ae63c913f213040"
+    "bytes": 5853,
+    "sha256": "222188fa41207987335ba9f28bb73c0b6d5651685e0d26ca0ea5033a2e6aa6b2"
   },
   {
     "path": "service/mvnw",
@@ -383,6 +383,11 @@
     "path": "tests/test_first_use.py",
     "bytes": 3219,
     "sha256": "aff62a106dcf741ff301f55f77839a8be2ca3f127ac2f5d024891757be2688b4"
+  },
+  {
+    "path": "tests/test_launcher_runtime.py",
+    "bytes": 2610,
+    "sha256": "d283af4ecc607afb8c37c5cd8aabde45735fb4b92cf75bb3d527b625b63c6333"
   },
   {
     "path": "tests/test_round13_worker_boundary.py",

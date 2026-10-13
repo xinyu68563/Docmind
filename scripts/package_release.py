@@ -2,7 +2,7 @@
 import hashlib, json, zipfile
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
-TESTS=('test_first_use.py','test_chunker.py','test_agent.py','test_round13_worker_boundary.py','test_task_persistence.py','test_embedding_pool.py')
+TESTS=('test_first_use.py','test_chunker.py','test_agent.py','test_round13_worker_boundary.py','test_task_persistence.py','test_embedding_pool.py','test_launcher_runtime.py')
 SCRIPTS=('start_docmind.ps1','build_frontend.py','download_models.py','download_llm.py','make_demo_pdf.py','check_environment.py','package_release.py')
 
 def selected_files():
