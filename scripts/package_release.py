@@ -9,7 +9,7 @@ def selected_files():
     files=[]
     for directory in ('docmind','frontend/src','service/src/main/java','service/src/test/java','docs','.github'):
         for p in (ROOT/directory).rglob('*'):
-            if p.is_file() and '__pycache__' not in p.parts:
+            if p.is_file() and '__pycache__' not in p.parts and p.name != 'RESUME.md':
                 files.append(p)
     for name in ('README.md','LICENSE','THIRD_PARTY_NOTICES.md','.gitignore','requirements.txt','requirements-demo.txt','requirements-dev.txt','frontend/index.html','frontend/vite.config.js','frontend/package.json','frontend/package-lock.json','service/pom.xml','service/mvnw','service/mvnw.cmd','service/src/main/resources/application.yml'):
         files.append(ROOT/name)

@@ -22,3 +22,6 @@ __pycache__/
 /service/target/
 /service/src/main/resources/static/
 *HANDOFF*.md
+
+# Private career notes stay outside the public project.
+/docs/RESUME.md
