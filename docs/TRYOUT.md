@@ -1,6 +1,15 @@
 # 本地试用
 
-下载仓库Code → Download ZIP并解压。请使用Python 3.11+、Java 21、Node.js（含npm）、Apache Maven。安装这些官方工具后重新打开终端使PATH生效。不要在GitHub页面直接运行Python。
+下载仓库Code → Download ZIP并解压。已验证的安装组合为Python 3.13、Java 21、Node.js 22（含npm）、Apache Maven 3.9。安装这些官方工具后重新打开终端使PATH生效。不要在GitHub页面直接运行Python。
+
+## 选择运行方式
+
+| 电脑条件 | 可使用的方式 |
+| --- | --- |
+| 普通Windows电脑，无独立显卡 | 演示模式：上传、任务进度和PDF查看；回答是固定模拟内容 |
+| 兼容NVIDIA显卡，建议8GB或以上显存 | 配置本地模型后进行真实论文问答；其他显卡组合仍需实测 |
+
+当前尚未提供经验证的纯CPU真实问答模式或云模型API。普通电脑可以部署演示工作台；需要实际论文答案时请先确认显卡和模型条件。
 
 ## 演示模式（无GPU和模型下载）
 

@@ -13,3 +13,5 @@ service\mvnw.cmd -f service/pom.xml test
 历史真实模型在RTX5060 8GB验证了上传、限定范围问答和留痕。公开论文9题为便利样本且基础模型可能已见过论文；WorkBuddy辅助分42/45，Codex对其中一项扣分有异议，建议43/45，用户尚未最终评分。二者都不是整体准确率，不证明Agent收益。
 
 发布验证的实际命令、数量和限制见docs/RELEASE_VALIDATION.md。原始私人数据及历史实验保留在开发工作区，没有随仓库传输。
+
+公开源码的首次安装验证见[README部署验证](DEPLOYMENT_CHECK.md)。

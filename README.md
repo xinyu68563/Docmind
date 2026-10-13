@@ -30,12 +30,12 @@ DocMind 让你直接向论文提问，并通过引用片段和 PDF 原文检查�
 
 | 依赖 | 已验证配置 |
 | --- | --- |
-| Python | 3.13 |
-| Java | 21 |
-| Node.js | 22，含 npm |
-| Maven | 3.9 系列 |
+| [Python](https://www.python.org/downloads/windows/) | 3.13 |
+| [Java](https://adoptium.net/temurin/releases/?version=21) | 21 |
+| [Node.js](https://nodejs.org/en/download) | 22，含 npm |
+| [Maven](https://maven.apache.org/install.html) | 3.9 系列 |
 
-Windows 启动方式如下。完整安装、模型下载和故障排查见[安装说明](docs/TRYOUT.md)。
+安装上述工具并加入 PATH 后，重新打开 PowerShell。Windows 启动方式如下。完整安装、模型下载和故障排查见[安装说明](docs/TRYOUT.md)。
 
 ### 下载并启动
 
@@ -57,7 +57,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/start_docmind.ps1 -B
 
 1. 上传 PDF，等待文档状态变为“可提问”。
 2. 选中要阅读的论文，输入问题并点击“检索并回答”。
-3. 点击回答中的引用编号，查看证据片段和原 PDF。
+3. 真实模型模式下，点击回答中的引用编号，查看证据片段和原 PDF。演示模式没有论文引用，可点击文档名称查看上传的 PDF。
 
 例如：
 

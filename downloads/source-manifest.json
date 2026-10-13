@@ -155,19 +155,24 @@
     "sha256": "1841b0a5fb3f76e4d1decfb0c15ff0c9fad72ab458181201db84d80529b37b56"
   },
   {
+    "path": "docs/DEPLOYMENT_CHECK.md",
+    "bytes": 2915,
+    "sha256": "23b10bc661772e9295b25f99d1af4fee135f9e29a525e860dfc3335946c886e0"
+  },
+  {
     "path": "docs/RELEASE_VALIDATION.md",
     "bytes": 1421,
     "sha256": "d81c78440147fa667a822c399899643e73815391393ff613d0fb6ae32bd074f4"
   },
   {
     "path": "docs/TESTING.md",
-    "bytes": 1084,
-    "sha256": "3dda53405df02241e014bde73c07a75616ebca1987bf56dade7af9c72ce5e1cb"
+    "bytes": 1168,
+    "sha256": "8aaa6bb3d9f1824b9896b5e99218a8d07e3dd2e58ff7227ec3869becb9beacf4"
   },
   {
     "path": "docs/TRYOUT.md",
-    "bytes": 3564,
-    "sha256": "0655289266920cd70228a0405cd7a99fb741e79f7bb15ea7eb3478fc9aa71e53"
+    "bytes": 4106,
+    "sha256": "c1650629839cd8a6e4ea0ef59c3dd501c3bf30cc696a0b66f8f99ed35a00eb10"
   },
   {
     "path": "docs/USAGE.md",
@@ -221,8 +226,8 @@
   },
   {
     "path": "README.md",
-    "bytes": 4533,
-    "sha256": "21c880e00e3ab93a6e137a3f357b140666cb17c972146a37227a44fc0950758c"
+    "bytes": 4871,
+    "sha256": "ba161ddc3d9baa8e779be1c7a38e3f4c9e59e28dbc1231abe80dc8fb40236a5a"
   },
   {
     "path": "requirements-demo.txt",
